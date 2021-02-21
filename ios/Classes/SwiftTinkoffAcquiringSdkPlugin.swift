@@ -11,6 +11,8 @@ public struct TinkoffOrderOptions {
   var title: String
   var description: String
   var recurrentPayment: Bool
+    var shops: [Shop]
+    var receipt: Receipt
 }
 
 public struct TinkoffCustomerOptions {
@@ -178,6 +180,9 @@ public class TinkoffAcquiringDelegate {
       orderId: tinkoffOrderOptions.orderId,
       customerKey: tinkoffCustomerOptions.customerId
     )
+    
+    paymentData.shops = tinkoffOrderOptions.shops
+    paymentData.receipt = tinkoffOrderOptions.receipt
     paymentData.savingAsParentPayment = tinkoffOrderOptions.recurrentPayment
 
     self.acquiringSdk?.presentPaymentView(
@@ -195,7 +200,7 @@ public class TinkoffAcquiringDelegate {
         do {
           let unfoldedResult = try apiResult.get()
           result(TinkoffAcquiringDelegateOpenPaymentScreenResponse(
-            status: TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_OK,
+            status: unfoldedResult.success ? TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_OK : TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_ERROR,
             paymentId: unfoldedResult.paymentId
           ))
         }
@@ -234,6 +239,9 @@ public class TinkoffAcquiringDelegate {
       orderId: tinkoffOrderOptions.orderId,
       customerKey: tinkoffCustomerOptions.customerId
     )
+    
+    paymentData.shops = tinkoffOrderOptions.shops
+    paymentData.receipt = tinkoffOrderOptions.receipt
     paymentData.savingAsParentPayment = tinkoffOrderOptions.recurrentPayment
 
     var applePayConfiguration = AcquiringUISDK.ApplePayConfiguration()
@@ -399,10 +407,12 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
       guard let title: String = arguments["title"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "title is required in openPaymentScreen method", details: nil)); return }
       guard let description: String = arguments["description"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "description is required in openPaymentScreen method", details: nil)); return }
       guard let money: NSNumber = arguments["money"] as? NSNumber else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
+        guard let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "shops is required in openPaymentScreen method", details: nil)); return }
+        guard let receipt: [String: Any] = arguments["receipt"] as? [String: Any] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
       let recurrentPayment: Bool = arguments["recurrentPayment"] as? Bool ?? false
 
       delegate.openPaymentScreen(
-        tinkoffOrderOptions: TinkoffOrderOptions(orderId: orderId, money: money, title: title, description: description, recurrentPayment: recurrentPayment),
+        tinkoffOrderOptions: TinkoffOrderOptions(orderId: orderId, money: money, title: title, description: description, recurrentPayment: recurrentPayment, shops: mapShops(shops: shops), receipt: mapReciept(reciept: receipt)),
         tinkoffCustomerOptions: TinkoffCustomerOptions(customerId: customerId, email: email),
         tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language),
         result: { (response) -> Void in
@@ -422,11 +432,13 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
       guard let title: String = arguments["title"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "title is required in openPaymentScreen method", details: nil)); return }
       guard let description: String = arguments["description"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "description is required in openPaymentScreen method", details: nil)); return }
       guard let money: NSNumber = arguments["money"] as? NSNumber else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
+        guard let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "shops is required in openPaymentScreen method", details: nil)); return }
+        guard let receipt: [String: Any] = arguments["receipt"] as? [String: Any] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
       let recurrentPayment: Bool = arguments["recurrentPayment"] as? Bool ?? false
       guard let merchantIdentifier: String = arguments["merchantIdentifier"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "merchantIdentifier is required in openApplePay method", details: nil)); return }
 
       delegate.openApplePay(
-        tinkoffOrderOptions: TinkoffOrderOptions(orderId: orderId, money: money, title: title, description: description, recurrentPayment: recurrentPayment),
+        tinkoffOrderOptions: TinkoffOrderOptions(orderId: orderId, money: money, title: title, description: description, recurrentPayment: recurrentPayment, shops: mapShops(shops: shops), receipt: mapReciept(reciept: receipt)),
         tinkoffCustomerOptions: TinkoffCustomerOptions(customerId: customerId, email: email),
         tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language),
         tinkoffApplePayOptions: TinkoffApplePayOptions(merchantIdentifier: merchantIdentifier),
@@ -470,4 +482,50 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
       result(FlutterMethodNotImplemented)
     }
   }
+    
+    func mapShops(shops: [[String: Any]]) -> [Shop] {
+        var array: [Shop] = []
+        
+        array = shops.map { (shop) -> Shop in
+            let shopCode = shop["shopCode"] as? String
+            let shopName = shop["shopName"] as? String
+            let amount = shop["amount"] as? Int64
+            let fee = shop["fee"] as? String
+            return Shop(shopCode: shopCode, name: shopName, amount: amount, fee: fee)
+        }
+        
+        return array
+    }
+    
+    func mapReciept(reciept: [String: Any]) -> Receipt {
+        let shopCode = reciept["shopCode"] as? String
+        let email = reciept["email"] as? String
+        let taxation = Taxation(rawValue: reciept["taxation"] as? String ?? "")
+        let phone = reciept["phone"] as? String
+        let items = mapItems(items: reciept["items"] as? [[String: Any]] ?? [[:]])
+        let customer = reciept["customer"] as? String
+        let customerInn = reciept["customerInn"] as? String
+        return Receipt(shopCode: shopCode, email: email, taxation: taxation, phone: phone, items: items, agentData: nil, supplierInfo: nil, customer: customer, customerInn: customerInn)
+    }
+    
+    func mapItems(items: [[String: Any]]) -> [Item] {
+        var array: [Item] = []
+        array = items.map({ (e) -> Item in
+            return Item(
+                amount: NSDecimalNumber(value: (e["amount"] as? Double ?? 0) / 100),
+                price: NSDecimalNumber(value: (e["price"] as? Double ?? 0) / 100),
+                name: e["name"] as? String ?? "",
+                tax: Tax(rawValue: e["tax"] as? String ?? ""),
+                quantity: e["quantity"] as? Double ?? 0.0,
+                paymentObject: nil,
+                paymentMethod: nil,
+                ean13: nil,
+                shopCode: nil,
+                measurementUnit: nil,
+                supplierInfo: nil,
+                agentData: nil
+            )
+        })
+        return array
+    }
 }
