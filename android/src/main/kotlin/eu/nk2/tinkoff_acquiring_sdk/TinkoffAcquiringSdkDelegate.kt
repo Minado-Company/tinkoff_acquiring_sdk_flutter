@@ -39,8 +39,8 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
         tinkoffAcquiring = TinkoffAcquiring(terminalKey, password, publicKey)
         if(enableDebug) {
             AcquiringSdk.isDeveloperMode = true
-            AcquiringSdk.isDebug = true
         }
+        AcquiringSdk.isDebug = true
 
         return if(!enableGooglePay) TinkoffAcquiringDelegateInitializeResponse(status = TinkoffAcquiringDelegateInitializeStatus.RESULT_OK)
         else {
