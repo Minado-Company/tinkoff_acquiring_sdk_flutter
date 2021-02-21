@@ -38,6 +38,7 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
         if(tinkoffAcquiring != null || googlePayHelper != null) return TinkoffAcquiringDelegateInitializeResponse(status = TinkoffAcquiringDelegateInitializeStatus.PLUGIN_ALREADY_INITIALIZED)
 
         tinkoffAcquiring = TinkoffAcquiring(terminalKey, password, publicKey)
+      
         AcquiringSdk.isDeveloperMode = isDeveloperMode
         AcquiringSdk.isDebug = isDebug
 
