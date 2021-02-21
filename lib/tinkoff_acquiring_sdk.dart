@@ -3,7 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:tinkoff_acquiring_sdk/models/tinkoff_receipt.dart';
 import 'package:tinkoff_acquiring_sdk/tinkoff_acquiring_models.dart';
+
+import 'models/tinkoff_shop.dart';
 
 /// Maps Dart-styled enum .toString() to other-languages-styled
 /// (Dart) "TinkoffLanguage.RU" -> (Others) RU
@@ -27,8 +30,11 @@ class TinkoffAcquiringSdk {
   static const MethodChannel _channel =
       const MethodChannel('eu.nk2/tinkoff_acquiring_sdk');
 
-  /// Enable logging and usage of debug Tinkoff API servers
-  final bool enableDebug;
+  /// Enable usage of test Tinkoff API servers
+  final bool isDeveloperMode;
+
+  /// Enable logging
+  final bool isDebug;
 
   /// Terminal key given to you by Tinkoff
   final String terminalKey;
@@ -52,7 +58,8 @@ class TinkoffAcquiringSdk {
   TinkoffAcquiringSdkStatus _status = TinkoffAcquiringSdkStatus.NOT_INITIALIZED;
 
   TinkoffAcquiringSdk({
-    this.enableDebug = false,
+    this.isDeveloperMode = false,
+    this.isDebug = false,
     @required this.terminalKey,
     @required this.password,
     @required this.publicKey,
@@ -80,7 +87,8 @@ class TinkoffAcquiringSdk {
 
     final Map<dynamic, dynamic> response =
         await _channel.invokeMethod('initialize', {
-      'enableDebug': this.enableDebug,
+      'isDeveloperMode': this.isDeveloperMode,
+      'isDebug': this.isDebug,
       'terminalKey': this.terminalKey,
       'password': this.password,
       'publicKey': this.publicKey.replaceAll('\n', ''), //iOS shits about it
@@ -157,19 +165,23 @@ class TinkoffAcquiringSdk {
   }
 
   /// Open card payment process screen
-  Future<TinkoffCommonResponse> openPaymentScreen(
-      {String orderId,
-      String title,
-      String description,
-      double money,
-      bool recurrentPayment,
-      String customerId,
-      TinkoffCheckType checkType,
-      String email,
-      bool enableSecureKeyboard,
-      bool enableCameraCardScanner,
-      TinkoffDarkThemeMode darkThemeMode,
-      TinkoffLanguage language}) async {
+  Future<TinkoffCommonResponse> openPaymentScreen({
+    String orderId,
+    String title,
+    String description,
+    double money,
+    bool recurrentPayment,
+    String customerId,
+    TinkoffCheckType checkType,
+    String email,
+    bool enableSecureKeyboard,
+    bool enableCameraCardScanner,
+    TinkoffDarkThemeMode darkThemeMode,
+    TinkoffLanguage language,
+    List<TinkoffShop> shops,
+    TinkoffReceipt receipt,
+    bool emailRequired = false,
+  }) async {
     assert(_status == TinkoffAcquiringSdkStatus.INITIALIZED);
     assert(orderId != null);
     assert(title != null);
@@ -191,7 +203,10 @@ class TinkoffAcquiringSdk {
       'enableSecureKeyboard': enableSecureKeyboard,
       'enableCameraCardScanner': enableCameraCardScanner,
       'darkThemeMode': _mapEnumToString(darkThemeMode),
-      'language': _mapLanguageToPlatform(language)
+      'language': _mapLanguageToPlatform(language),
+      'emailRequired': emailRequired,
+      'shops': shops?.map((item) => item.toMap())?.toList(),
+      'receipt': receipt?.toMap(),
     });
 
     final TinkoffCommonResponse status =
