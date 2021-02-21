@@ -1,9 +1,12 @@
+import 'package:tinkoff_acquiring_sdk/models/tinkoff_taxation.dart';
+
 import 'tinkoff_item.dart';
+import '../extensions.dart';
 
 class TinkoffReceipt {
   final String shopCode;
   final String email;
-  final String taxation;
+  final TinkoffTaxation taxation;
   final String phone;
   final List<TinkoffItem> items;
 
@@ -14,7 +17,7 @@ class TinkoffReceipt {
     return {
       'shopCode': shopCode,
       'email': email,
-      'taxation': taxation?.toString(),
+      'taxation': taxation?.toEnumString(),
       'phone': phone,
       'items': items?.map((x) => x?.toMap())?.toList(),
     };

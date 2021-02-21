@@ -1,4 +1,5 @@
 import 'tinkoff_tax.dart';
+import '../extensions.dart';
 
 class TinkoffItem {
   // Сумма в копейка
@@ -21,7 +22,7 @@ class TinkoffItem {
       'quantity': quantity,
       'name': name,
       'amount': amount,
-      'tax': tax?.toString(),
+      'tax': tax?.toEnumString(),
     };
   }
 }
