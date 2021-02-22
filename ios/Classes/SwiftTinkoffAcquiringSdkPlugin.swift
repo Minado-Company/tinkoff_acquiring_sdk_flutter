@@ -128,13 +128,18 @@ public class TinkoffAcquiringDelegate {
   public func openAttachCardScreen(
     tinkoffCustomerOptions: TinkoffCustomerOptions,
     tinkoffFeaturesOptions: TinkoffFeaturesOptions,
+    paymentCardCheckType: PaymentCardCheckType,
     result: @escaping TinkoffResult<TinkoffAcquiringDelegateOpenAttachCardScreenResponse>
   ) {
     if self.acquiringSdk == nil { result(TinkoffAcquiringDelegateOpenAttachCardScreenResponse(status: TinkoffAcquiringDelegateOpenAttachCardScreenStatus.ERROR_NOT_INITIALIZED)) }
 
     let viewConfiguration = AcquiringViewConfiguration()
     viewConfiguration.localizableInfo = AcquiringViewConfiguration.LocalizableInfo.init(lang: tinkoffFeaturesOptions.language)
-
+    
+    self.acquiringSdk?.addCardNeedSetCheckTypeHandler = {
+        return paymentCardCheckType
+    }
+    
     self.acquiringSdk?.presentAddCardView(
       on: self.viewController!,
       customerKey: tinkoffCustomerOptions.customerId,
@@ -386,10 +391,11 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
       guard let customerId: String = arguments["customerId"] as? String else {  result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "customerId is required in openAttachCardScreen method", details: nil)); return }
       let email: String? = arguments["email"] as? String
       guard let language: String = arguments["language"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "language is required in openAttachCardScreen method", details: nil)); return }
+        let paymentCardCheckType = PaymentCardCheckType(rawValue: arguments["checkType"] as? String ?? "")
 
       delegate.openAttachCardScreen(
         tinkoffCustomerOptions: TinkoffCustomerOptions(customerId: customerId, email: email),
-        tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language),
+        tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language), paymentCardCheckType: paymentCardCheckType,
         result: { (response) -> Void in
           result([
             "status": response.status.rawValue,
