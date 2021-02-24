@@ -237,6 +237,8 @@ class TinkoffAcquiringSdk {
       bool enableSecureKeyboard,
       bool enableCameraCardScanner,
       TinkoffDarkThemeMode darkThemeMode,
+      List<TinkoffShop> shops,
+      TinkoffReceipt receipt,
       TinkoffLanguage language}) async {
     assert(_status == TinkoffAcquiringSdkStatus.INITIALIZED);
     assert(Platform.isAndroid);
@@ -260,7 +262,9 @@ class TinkoffAcquiringSdk {
       'enableSecureKeyboard': enableSecureKeyboard,
       'enableCameraCardScanner': enableCameraCardScanner,
       'darkThemeMode': _mapEnumToString(darkThemeMode),
-      'language': _mapLanguageToPlatform(language)
+      'language': _mapLanguageToPlatform(language),
+      'shops': shops?.map((item) => item.toMap())?.toList(),
+      'receipt': receipt?.toMap(),
     });
 
     final TinkoffCommonResponse status =
@@ -289,6 +293,8 @@ class TinkoffAcquiringSdk {
       TinkoffCheckType checkType,
       String email,
       TinkoffLanguage language,
+      List<TinkoffShop> shops,
+      TinkoffReceipt receipt,
       String merchantIdentifier}) async {
     assert(_status == TinkoffAcquiringSdkStatus.INITIALIZED);
     assert(Platform.isIOS);
@@ -311,7 +317,9 @@ class TinkoffAcquiringSdk {
       'checkType': checkType != null ? _mapEnumToString(checkType) : null,
       'email': email,
       'language': _mapLanguageToPlatform(language),
-      'merchantIdentifier': merchantIdentifier
+      'merchantIdentifier': merchantIdentifier,
+      'shops': shops?.map((item) => item.toMap())?.toList(),
+      'receipt': receipt?.toMap(),
     });
 
     final TinkoffCommonResponse status =
