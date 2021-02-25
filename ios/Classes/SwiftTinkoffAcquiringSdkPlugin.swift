@@ -88,7 +88,8 @@ public class TinkoffAcquiringDelegate {
     case PLUGIN_ALREADY_INITIALIZED = "PLUGIN_ALREADY_INITIALIZED"
   }
   public func initialize(
-    enableDebug: Bool,
+    isDebug: Bool,
+    isDeveloperMode: Bool,
     terminalKey: String,
     password: String,
     publicKey: String,
@@ -97,13 +98,16 @@ public class TinkoffAcquiringDelegate {
     if self.viewController == nil { result(TinkoffAcquiringDelegateInitializeResponse(status: TinkoffAcquiringDelegateInitializeStatus.FLUTTER_NOT_INITIALIZED)) }
     if self.acquiringSdk != nil { result(TinkoffAcquiringDelegateInitializeResponse(status: TinkoffAcquiringDelegateInitializeStatus.PLUGIN_ALREADY_INITIALIZED)) }
 
-    let acquiringEnvironment = enableDebug ? AcquiringSdkEnvironment.test : AcquiringSdkEnvironment.prod
+    let acquiringEnvironment = isDeveloperMode ? AcquiringSdkEnvironment.test : AcquiringSdkEnvironment.prod
     
     do {
-      self.acquiringSdk = try AcquiringUISDK(configuration: AcquiringSdkConfiguration(
-        credential: AcquiringSdkCredential(terminalKey: terminalKey, password: password, publicKey: publicKey),
-        server: acquiringEnvironment
-      ))
+        let acquiringConfiguration = AcquiringSdkConfiguration(
+            credential: AcquiringSdkCredential(terminalKey: terminalKey, password: password, publicKey: publicKey),
+            server: acquiringEnvironment
+          )
+        
+        acquiringConfiguration.logger = isDebug ? AcquiringLoggerDefault() : nil
+      self.acquiringSdk = try AcquiringUISDK(configuration: acquiringConfiguration)
 
       result(TinkoffAcquiringDelegateInitializeResponse(status: TinkoffAcquiringDelegateInitializeStatus.RESULT_OK))
     }
@@ -370,13 +374,15 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
     
     switch call.method {
     case "initialize":
-      let enableDebug: Bool = arguments["enableDebug"] as? Bool ?? false
+        let isDebug: Bool = arguments["isDebug"] as? Bool ?? false
+        let isDeveloperMode: Bool = arguments["isDeveloperMode"] as? Bool ?? false
       guard let terminalKey: String = arguments["terminalKey"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "terminalKey is required in initialize method", details: nil)); return }
       guard let password: String = arguments["password"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "password is required in initialize method", details: nil)); return }
       guard let publicKey: String = arguments["publicKey"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "publicKey is required in initialize method", details: nil)); return }
 
       delegate.initialize(
-        enableDebug: enableDebug,
+        isDebug: isDebug,
+        isDeveloperMode: isDeveloperMode,
         terminalKey: terminalKey,
         password: password,
         publicKey: publicKey,
