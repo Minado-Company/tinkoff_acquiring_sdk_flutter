@@ -58,6 +58,7 @@ public class TinkoffAcquiringDelegate {
     money: NSNumber,
     email: String?,
     enablePaySBP: Bool,
+    emailRequired: Bool,
     language: String
   ) -> AcquiringViewConfiguration {
     let viewConfiguration = AcquiringViewConfiguration.init()
@@ -69,7 +70,9 @@ public class TinkoffAcquiringDelegate {
     viewConfiguration.fields.append(AcquiringViewConfiguration.InfoFields.amount(title: title, amount: amountTitle))
     viewConfiguration.fields.append(AcquiringViewConfiguration.InfoFields.detail(title: NSAttributedString(string: description, attributes: [.font : UIFont.systemFont(ofSize: 17)])))
 
-    viewConfiguration.fields.append(AcquiringViewConfiguration.InfoFields.email(value: email, placeholder: viewConfigurationLanguageData[language]?["placeholder.email"] ?? ""))
+    if (emailRequired) {
+        viewConfiguration.fields.append(AcquiringViewConfiguration.InfoFields.email(value: email, placeholder: viewConfigurationLanguageData[language]?["placeholder.email"] ?? ""))
+    }
     if enablePaySBP { viewConfiguration.fields.append(AcquiringViewConfiguration.InfoFields.buttonPaySPB) }
 
     viewConfiguration.localizableInfo = AcquiringViewConfiguration.LocalizableInfo.init(lang: language)
@@ -180,6 +183,7 @@ public class TinkoffAcquiringDelegate {
     tinkoffOrderOptions: TinkoffOrderOptions,
     tinkoffCustomerOptions: TinkoffCustomerOptions,
     tinkoffFeaturesOptions: TinkoffFeaturesOptions,
+    emailRequired: Bool,
     result: @escaping TinkoffResult<TinkoffAcquiringDelegateOpenPaymentScreenResponse>
   ) {
     if self.acquiringSdk == nil { result(TinkoffAcquiringDelegateOpenPaymentScreenResponse(status: TinkoffAcquiringDelegateOpenPaymentScreenStatus.ERROR_NOT_INITIALIZED)) }
@@ -203,6 +207,7 @@ public class TinkoffAcquiringDelegate {
         money: tinkoffOrderOptions.money,
         email: tinkoffCustomerOptions.email,
         enablePaySBP: false,
+        emailRequired: emailRequired,
         language: tinkoffFeaturesOptions.language
       ),
       completionHandler: { apiResult -> Void in
@@ -264,7 +269,7 @@ public class TinkoffAcquiringDelegate {
         description: tinkoffOrderOptions.description,
         money: tinkoffOrderOptions.money,
         email: tinkoffCustomerOptions.email,
-        enablePaySBP: false,
+        enablePaySBP: false, emailRequired: false,
         language: tinkoffFeaturesOptions.language
       ),
       paymentConfiguration: applePayConfiguration,
@@ -422,11 +427,12 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
         guard let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "shops is required in openPaymentScreen method", details: nil)); return }
         guard let receipt: [String: Any] = arguments["receipt"] as? [String: Any] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
       let recurrentPayment: Bool = arguments["recurrentPayment"] as? Bool ?? false
+        let emailRequired: Bool = arguments["emailRequired"] as? Bool ?? true
 
       delegate.openPaymentScreen(
         tinkoffOrderOptions: TinkoffOrderOptions(orderId: orderId, money: money, title: title, description: description, recurrentPayment: recurrentPayment, shops: mapShops(shops: shops), receipt: mapReciept(reciept: receipt)),
         tinkoffCustomerOptions: TinkoffCustomerOptions(customerId: customerId, email: email),
-        tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language),
+        tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language), emailRequired: emailRequired,
         result: { (response) -> Void in
           result([
             "status": response.status.rawValue,
