@@ -156,19 +156,13 @@ fun TinkoffReceipt.toTinkoff(): Receipt {
     val itemsList = items?.map { it.toTinkoff() } ?: arrayListOf()
     val itemsArray = arrayListOf<Item>().apply { addAll(itemsList) }
     val tax = if (taxation != null) Taxation.valueOf(taxation) else Taxation.USN_INCOME_OUTCOME
-    return if (shopCode == null)
-        Receipt(
-            items = itemsArray,
-            email = email ?: "",
-            taxation = tax
-        )
-    else
-        Receipt(
-            shopCode = shopCode,
-            items = itemsArray,
-            email = email ?: "",
-            taxation = tax
-        )
+    return Receipt().apply {
+        this.items = itemsArray
+        this.email = this@toTinkoff.email
+        this.shopCode = this@toTinkoff.shopCode
+        this.taxation = tax
+        this.phone = this@toTinkoff.phone
+    }
 }
 
 fun TinkoffItem.toTinkoff(): Item =
