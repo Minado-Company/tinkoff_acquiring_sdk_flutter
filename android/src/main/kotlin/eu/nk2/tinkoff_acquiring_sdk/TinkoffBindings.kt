@@ -15,7 +15,9 @@ fun safe(function: MethodChannelFunction): MethodChannelFunction = { call, resul
     try {
         function(call, result, delegate, scope)
     } catch (e: Exception) {
-        result.error(TINKOFF_COMMON_STATUS_FATAL_ERROR, e.message, null)
+        scope.doOnMain {
+            result.error(TINKOFF_COMMON_STATUS_FATAL_ERROR, e.message, null)
+        }
     }
 }
 
