@@ -5,6 +5,26 @@ import TinkoffASDKCore
 
 public var TINKOFF_COMMON_STATUS_FATAL_ERROR = "FATAL_ERROR"
 
+public let tax = [
+    "NONE" : Tax.none,
+    "VAT_0" : Tax.vat0,
+    "VAT_10": Tax.vat10,
+    "VAT_110": Tax.vat110,
+    "VAT_118": Tax.vat118,
+    "VAT_120": Tax.vat120,
+    "VAT_18": Tax.vat18,
+    "VAT_20": Tax.vat20,
+]
+
+public let taxation = [
+    "OSN" : Taxation.osn,
+    "USN_INCOME" : Taxation.usnIncome,
+    "USN_INCOME_OUTCOME" : Taxation.usnIncomeOutcome,
+    "ENVD" : Taxation.envd,
+    "ESN" : Taxation.esn,
+    "PATENT" : Taxation.parent,
+]
+
 public struct TinkoffOrderOptions {
   var orderId: String
   var money: NSNumber
@@ -518,7 +538,7 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
     func mapReciept(reciept: [String: Any]) -> Receipt {
         let shopCode = reciept["shopCode"] as? String
         let email = reciept["email"] as? String
-        let taxation = Taxation(rawValue: reciept["taxation"] as? String ?? "")
+        let taxation = taxation[reciept["taxation"] as? String ?? ""]
         let phone = reciept["phone"] as? String
         let items = mapItems(items: reciept["items"] as? [[String: Any]] ?? [[:]])
         let customer = reciept["customer"] as? String
@@ -533,7 +553,7 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
                 amount: NSDecimalNumber(value: (e["amount"] as? Double ?? 0) / 100),
                 price: NSDecimalNumber(value: (e["price"] as? Double ?? 0) / 100),
                 name: e["name"] as? String ?? "",
-                tax: Tax(rawValue: e["tax"] as? String ?? ""),
+                tax: tax[e["tax"] as? String ?? ""] ?? Tax.none,
                 quantity: e["quantity"] as? Double ?? 0.0,
                 paymentObject: nil,
                 paymentMethod: nil,
