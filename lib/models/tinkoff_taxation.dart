@@ -1,14 +1,14 @@
 enum TinkoffTaxation {
   // Общая СН
-  osn,
+  OSN,
   // Упрощенная СН (доходы)
-  usn_income,
+  USN_INCOME,
   // Упрощенная СН (доходы минус расходы)
-  usn_income_outcome,
+  USN_INCOME_OUTCOME,
   // Единый налог на вмененный доход
-  envd,
+  ENVD,
   //  Единый сельскохозяйственный налог
-  esn,
+  ESN,
   // Патентная СН
-  patent,
+  PATENT,
 }
