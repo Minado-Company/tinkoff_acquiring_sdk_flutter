@@ -77,7 +77,7 @@ class TinkoffAcquiringSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware
   override suspend fun <T> runActivityForResult(
       initializeActivity: (Activity) -> Unit,
       requestCode: Int,
-      activityResultMapper: (resultCode: Int, data: Intent) -> T?
+      activityResultMapper: (resultCode: Int, data: Intent?) -> T?
   ): T? {
     if(binding == null) return null
 
@@ -86,7 +86,7 @@ class TinkoffAcquiringSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware
       binding?.addActivityResultListener(object: ActivityResultListener {
         override fun onActivityResult(_requestCode: Int, resultCode: Int, data: Intent?): Boolean {
           binding?.removeActivityResultListener(this)
-          return if (requestCode != _requestCode || data == null) false
+          return if (requestCode != _requestCode) false
           else {
             methodCallScope.doOnMain { sink.resume(activityResultMapper(resultCode, data)) }
             true

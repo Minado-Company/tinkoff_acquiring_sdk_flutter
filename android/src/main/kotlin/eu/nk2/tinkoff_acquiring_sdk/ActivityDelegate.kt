@@ -10,6 +10,6 @@ interface ActivityDelegate {
 
     suspend fun <T> runActivityForResult(
         initializeActivity: (Activity) -> Unit, requestCode: Int,
-        activityResultMapper: (resultCode: Int, data: Intent) -> T?
+        activityResultMapper: (resultCode: Int, data: Intent?) -> T?
     ): T?
 }

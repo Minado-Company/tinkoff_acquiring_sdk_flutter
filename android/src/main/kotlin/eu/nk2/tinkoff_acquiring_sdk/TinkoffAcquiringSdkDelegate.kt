@@ -82,14 +82,14 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
             { resultCode, data -> when(resultCode) {
                 Activity.RESULT_OK -> TinkoffAcquiringDelegateOpenAttachScreenResponse(
                     status = TinkoffAcquiringDelegateOpenAttachScreenStatus.RESULT_OK,
-                    cardId = data.getStringExtra(TinkoffAcquiring.EXTRA_CARD_ID)
+                    cardId = data?.getStringExtra(TinkoffAcquiring.EXTRA_CARD_ID)
                 )
                 Activity.RESULT_CANCELED -> TinkoffAcquiringDelegateOpenAttachScreenResponse(
                     status = TinkoffAcquiringDelegateOpenAttachScreenStatus.RESULT_CANCELLED
                 )
                 TinkoffAcquiring.RESULT_ERROR -> TinkoffAcquiringDelegateOpenAttachScreenResponse(
                     status = TinkoffAcquiringDelegateOpenAttachScreenStatus.RESULT_ERROR,
-                    error = data.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
+                    error = data?.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
                 )
                 else -> TinkoffAcquiringDelegateOpenAttachScreenResponse(
                     status = TinkoffAcquiringDelegateOpenAttachScreenStatus.RESULT_NONE
@@ -124,15 +124,15 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
             { resultCode, data -> when(resultCode) {
                 Activity.RESULT_OK -> TinkoffAcquiringDelegateOpenPaymentScreenResponse(
                     status = TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_OK,
-                    cardId = data.getStringExtra(TinkoffAcquiring.EXTRA_CARD_ID),
-                    paymentId = data.getLongExtra(TinkoffAcquiring.EXTRA_PAYMENT_ID, -1).let { if(it != -1L) it else null }
+                    cardId = data?.getStringExtra(TinkoffAcquiring.EXTRA_CARD_ID),
+                    paymentId = data?.getLongExtra(TinkoffAcquiring.EXTRA_PAYMENT_ID, -1).let { if(it != -1L) it else null }
                 )
                 Activity.RESULT_CANCELED -> TinkoffAcquiringDelegateOpenPaymentScreenResponse(
                     status = TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_CANCELLED
                 )
                 TinkoffAcquiring.RESULT_ERROR -> TinkoffAcquiringDelegateOpenPaymentScreenResponse(
                     status = TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_ERROR,
-                    error = data.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
+                    error = data?.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
                 )
                 else -> TinkoffAcquiringDelegateOpenPaymentScreenResponse(
                     status = TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_NONE
@@ -161,7 +161,7 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
             { activity -> googlePayHelper!!.openGooglePay(activity, tinkoffOrderOptions.money, TINKOFF_ACQUIRING_OPEN_GOOGLE_PAY_REQUEST) },
             TINKOFF_ACQUIRING_OPEN_GOOGLE_PAY_REQUEST,
             { resultCode, data -> when(resultCode) {
-                Activity.RESULT_OK -> GooglePayHelper.getGooglePayToken(data)
+                Activity.RESULT_OK -> GooglePayHelper.getGooglePayToken(data!!)
                 Activity.RESULT_CANCELED -> "canceled"
                 else -> null
             } }
@@ -224,7 +224,7 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
                 )
                 TinkoffAcquiring.RESULT_ERROR -> TinkoffAcquiringDelegateOpenPaymentQrScreenResponse(
                     status = TinkoffAcquiringDelegateOpenPaymentQrScreenStatus.RESULT_ERROR,
-                    error = data.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
+                    error = data?.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
                 )
                 else -> TinkoffAcquiringDelegateOpenPaymentQrScreenResponse(
                     status = TinkoffAcquiringDelegateOpenPaymentQrScreenStatus.RESULT_NONE
@@ -262,7 +262,7 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
                 )
                 TinkoffAcquiring.RESULT_ERROR -> TinkoffAcquiringDelegateOpenSavedCardsScreenResponse(
                     status = TinkoffAcquiringDelegateOpenSavedCardsScreenStatus.RESULT_ERROR,
-                    error = data.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
+                    error = data?.getSerializableExtra(TinkoffAcquiring.EXTRA_ERROR) as Throwable
                 )
                 else -> TinkoffAcquiringDelegateOpenSavedCardsScreenResponse(
                     status = TinkoffAcquiringDelegateOpenSavedCardsScreenStatus.RESULT_NONE
