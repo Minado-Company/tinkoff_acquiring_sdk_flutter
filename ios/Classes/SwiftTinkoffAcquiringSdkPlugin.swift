@@ -22,7 +22,7 @@ public let taxation = [
     "USN_INCOME_OUTCOME" : Taxation.usnIncomeOutcome,
     "ENVD" : Taxation.envd,
     "ESN" : Taxation.esn,
-    "PATENT" : Taxation.parent,
+    "PATENT" : Taxation.patent,
 ]
 
 public struct TinkoffOrderOptions {
