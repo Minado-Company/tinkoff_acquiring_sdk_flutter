@@ -22,7 +22,7 @@ public let taxation = [
     "USN_INCOME_OUTCOME" : Taxation.usnIncomeOutcome,
     "ENVD" : Taxation.envd,
     "ESN" : Taxation.esn,
-    "PATENT" : Taxation.patent,
+    "PATENT" : Taxation.parent,
 ]
 
 public struct TinkoffOrderOptions {
@@ -217,7 +217,7 @@ public class TinkoffAcquiringDelegate {
     paymentData.shops = tinkoffOrderOptions.shops
     paymentData.receipt = tinkoffOrderOptions.receipt
     paymentData.savingAsParentPayment = tinkoffOrderOptions.recurrentPayment
-
+    paymentData.description = tinkoffOrderOptions.description
     self.acquiringSdk?.presentPaymentView(
       on: self.viewController!,
       paymentData: paymentData,
@@ -225,7 +225,7 @@ public class TinkoffAcquiringDelegate {
         title: tinkoffOrderOptions.title,
         description: tinkoffOrderOptions.description,
         money: tinkoffOrderOptions.money,
-        email: tinkoffCustomerOptions.email,
+        email: paymentData.receipt?.email,//tinkoffCustomerOptions.email,
         enablePaySBP: false,
         emailRequired: emailRequired,
         language: tinkoffFeaturesOptions.language
@@ -264,7 +264,8 @@ public class TinkoffAcquiringDelegate {
     tinkoffCustomerOptions: TinkoffCustomerOptions,
     tinkoffFeaturesOptions: TinkoffFeaturesOptions,
     tinkoffApplePayOptions: TinkoffApplePayOptions,
-    result: @escaping TinkoffResult<TinkoffAcquiringDelegateOpenApplePayResponse>
+    result: @escaping TinkoffResult<TinkoffAcquiringDelegateOpenApplePayResponse>,
+    emailRequired: Bool = false
   ) {
     if self.acquiringSdk == nil { result(TinkoffAcquiringDelegateOpenApplePayResponse(status: TinkoffAcquiringDelegateOpenApplePayStatus.ERROR_NOT_INITIALIZED)) }
 
@@ -277,6 +278,7 @@ public class TinkoffAcquiringDelegate {
     paymentData.shops = tinkoffOrderOptions.shops
     paymentData.receipt = tinkoffOrderOptions.receipt
     paymentData.savingAsParentPayment = tinkoffOrderOptions.recurrentPayment
+    paymentData.description = tinkoffOrderOptions.description
 
     var applePayConfiguration = AcquiringUISDK.ApplePayConfiguration()
     applePayConfiguration.merchantIdentifier = tinkoffApplePayOptions.merchantIdentifier
@@ -289,7 +291,7 @@ public class TinkoffAcquiringDelegate {
         description: tinkoffOrderOptions.description,
         money: tinkoffOrderOptions.money,
         email: tinkoffCustomerOptions.email,
-        enablePaySBP: false, emailRequired: false,
+        enablePaySBP: false, emailRequired: emailRequired,
         language: tinkoffFeaturesOptions.language
       ),
       paymentConfiguration: applePayConfiguration,
@@ -297,7 +299,7 @@ public class TinkoffAcquiringDelegate {
         do {
           let unfoldedResult = try apiResult.get()
           result(TinkoffAcquiringDelegateOpenApplePayResponse(
-            status: TinkoffAcquiringDelegateOpenApplePayStatus.RESULT_OK,
+            status: unfoldedResult.success ? TinkoffAcquiringDelegateOpenApplePayStatus.RESULT_OK : TinkoffAcquiringDelegateOpenApplePayStatus.RESULT_ERROR,
             paymentId: unfoldedResult.paymentId
           ))
         }
@@ -473,6 +475,7 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
         guard let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "shops is required in openPaymentScreen method", details: nil)); return }
         guard let receipt: [String: Any] = arguments["receipt"] as? [String: Any] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
       let recurrentPayment: Bool = arguments["recurrentPayment"] as? Bool ?? false
+        let emailRequired: Bool = arguments["emailRequired"] as? Bool ?? false
       guard let merchantIdentifier: String = arguments["merchantIdentifier"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "merchantIdentifier is required in openApplePay method", details: nil)); return }
 
       delegate.openApplePay(
@@ -487,7 +490,8 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
             "cardId": response.cardId as Any?,
             "paymentId": response.paymentId
           ])
-        }
+        },
+        emailRequired: emailRequired
       )
     case "openSavedCardsScreen":
       guard let customerId: String = arguments["customerId"] as? String else {  result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "customerId is required in openSavedCardsScreen method", details: nil)); return }

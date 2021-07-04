@@ -295,6 +295,7 @@ class TinkoffAcquiringSdk {
       TinkoffLanguage language,
       List<TinkoffShop> shops,
       TinkoffReceipt receipt,
+      bool emailRequired = false,
       String merchantIdentifier}) async {
     assert(_status == TinkoffAcquiringSdkStatus.INITIALIZED);
     assert(Platform.isIOS);
@@ -319,6 +320,7 @@ class TinkoffAcquiringSdk {
       'language': _mapLanguageToPlatform(language),
       'merchantIdentifier': merchantIdentifier,
       'shops': shops?.map((item) => item.toMap())?.toList(),
+      'emailRequired': emailRequired,
       'receipt': receipt?.toMap(),
     });
 

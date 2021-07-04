@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final TinkoffAcquiringSdk tinkoffAcquiringSdk = TinkoffAcquiringSdk(
-      enableDebug: true,
+      isDebug: true,
       terminalKey: "TestSDK",
       password: "12345678",
       publicKey: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5Yg3RyEkszggDVMDHCAG\n" +
