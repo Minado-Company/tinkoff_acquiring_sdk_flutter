@@ -1,8 +1,8 @@
 class TinkoffShop {
-  final String shopCode;
-  final String name;
-  final int amount;
-  final String fee;
+  final String? shopCode;
+  final String? name;
+  final int? amount;
+  final String? fee;
 
   TinkoffShop({
     this.shopCode,

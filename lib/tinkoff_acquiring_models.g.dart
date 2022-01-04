@@ -1,5 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+import 'package:collection/collection.dart' show IterableExtension;
 part of 'tinkoff_acquiring_models.dart';
 
 // **************************************************************************
@@ -8,7 +9,7 @@ part of 'tinkoff_acquiring_models.dart';
 
 TinkoffError _$TinkoffErrorFromJson(Map<String, dynamic> json) {
   return TinkoffError(
-    message: json['message'] as String,
+    message: json['message'] as String?,
   );
 }
 
@@ -23,21 +24,21 @@ TinkoffAcquiringInitializationResponse
   return TinkoffAcquiringInitializationResponse(
     status: _$enumDecodeNullable(
         _$TinkoffAcquiringInitializationStatusEnumMap, json['status']),
-    error: json['error'] as String,
+    error: json['error'] as String?,
   );
 }
 
 Map<String, dynamic> _$TinkoffAcquiringInitializationResponseToJson(
         TinkoffAcquiringInitializationResponse instance) =>
     <String, dynamic>{
-      'status': _$TinkoffAcquiringInitializationStatusEnumMap[instance.status],
+      'status': _$TinkoffAcquiringInitializationStatusEnumMap[instance.status!],
       'error': instance.error,
     };
 
-T _$enumDecode<T>(
+T? _$enumDecode<T>(
   Map<T, dynamic> enumValues,
   dynamic source, {
-  T unknownValue,
+  T? unknownValue,
 }) {
   if (source == null) {
     throw ArgumentError('A value must be provided. Supported values: '
@@ -45,7 +46,7 @@ T _$enumDecode<T>(
   }
 
   final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
+      .singleWhereOrNull((e) => e.value == source)
       ?.key;
 
   if (value == null && unknownValue == null) {
@@ -55,10 +56,10 @@ T _$enumDecode<T>(
   return value ?? unknownValue;
 }
 
-T _$enumDecodeNullable<T>(
+T? _$enumDecodeNullable<T>(
   Map<T, dynamic> enumValues,
   dynamic source, {
-  T unknownValue,
+  T? unknownValue,
 }) {
   if (source == null) {
     return null;
@@ -83,17 +84,17 @@ TinkoffCommonResponse _$TinkoffCommonResponseFromJson(
   return TinkoffCommonResponse(
     status: _$enumDecodeNullable(
         _$TinkoffAcquiringCommonStatusEnumMap, json['status']),
-    cardId: json['cardId'] as String,
-    paymentId: json['paymentId'] as int,
-    rebillId: json['rebillId'] as String,
-    error: json['error'] as String,
+    cardId: json['cardId'] as String?,
+    paymentId: json['paymentId'] as int?,
+    rebillId: json['rebillId'] as String?,
+    error: json['error'] as String?,
   );
 }
 
 Map<String, dynamic> _$TinkoffCommonResponseToJson(
         TinkoffCommonResponse instance) =>
     <String, dynamic>{
-      'status': _$TinkoffAcquiringCommonStatusEnumMap[instance.status],
+      'status': _$TinkoffAcquiringCommonStatusEnumMap[instance.status!],
       'cardId': instance.cardId,
       'paymentId': instance.paymentId,
       'rebillId': instance.rebillId,

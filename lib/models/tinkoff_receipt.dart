@@ -4,11 +4,11 @@ import 'tinkoff_item.dart';
 import '../extensions.dart';
 
 class TinkoffReceipt {
-  final String shopCode;
-  final String email;
-  final TinkoffTaxation taxation;
-  final String phone;
-  final List<TinkoffItem> items;
+  final String? shopCode;
+  final String? email;
+  final TinkoffTaxation? taxation;
+  final String? phone;
+  final List<TinkoffItem>? items;
 
   TinkoffReceipt(
       {this.shopCode, this.email, this.taxation, this.phone, this.items});
