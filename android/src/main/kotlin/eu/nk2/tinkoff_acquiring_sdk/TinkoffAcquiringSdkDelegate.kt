@@ -27,7 +27,6 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
         isDebug: Boolean,
         isDeveloperMode: Boolean,
         terminalKey: String,
-        password: String,
         publicKey: String,
         enableGooglePay: Boolean,
         requireAddress: Boolean,
@@ -37,7 +36,7 @@ class TinkoffAcquiringSdkDelegate(private val activityDelegate: ActivityDelegate
         if(activityDelegate.activity == null || activityDelegate.context == null) return TinkoffAcquiringDelegateInitializeResponse(status = TinkoffAcquiringDelegateInitializeStatus.FLUTTER_NOT_INITIALIZED)
         if(tinkoffAcquiring != null || googlePayHelper != null) return TinkoffAcquiringDelegateInitializeResponse(status = TinkoffAcquiringDelegateInitializeStatus.PLUGIN_ALREADY_INITIALIZED)
 
-        tinkoffAcquiring = TinkoffAcquiring(terminalKey, password, publicKey)
+        tinkoffAcquiring = TinkoffAcquiring(terminalKey, publicKey)
       
         AcquiringSdk.isDeveloperMode = isDeveloperMode
         AcquiringSdk.isDebug = isDebug

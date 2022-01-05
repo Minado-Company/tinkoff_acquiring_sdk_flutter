@@ -39,9 +39,6 @@ class TinkoffAcquiringSdk {
   /// Terminal key given to you by Tinkoff
   final String terminalKey;
 
-  /// Password given to you by Tinkoff
-  final String password;
-
   /// Public key given to you by Tinkoff
   final String publicKey;
 
@@ -61,13 +58,11 @@ class TinkoffAcquiringSdk {
     this.isDeveloperMode = false,
     this.isDebug = false,
     required this.terminalKey,
-    required this.password,
     required this.publicKey,
     this.enableGooglePay = false,
     this.requireAddress = false,
     this.requirePhone = false,
   })  : assert(terminalKey != null),
-        assert(password != null),
         assert(publicKey != null),
         assert(!enableGooglePay || (enableGooglePay && Platform.isAndroid));
 
@@ -90,7 +85,6 @@ class TinkoffAcquiringSdk {
       'isDeveloperMode': this.isDeveloperMode,
       'isDebug': this.isDebug,
       'terminalKey': this.terminalKey,
-      'password': this.password,
       'publicKey': this.publicKey.replaceAll('\n', ''), //iOS shits about it
       'enableGooglePay': this.enableGooglePay,
       'requireAddress': this.requireAddress,

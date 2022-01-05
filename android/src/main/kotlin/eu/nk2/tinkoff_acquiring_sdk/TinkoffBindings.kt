@@ -27,7 +27,6 @@ private val tinkoffInitialize: MethodChannelFunction = safe { call, result, dele
         isDebug = call.argument("isDebug") ?: false,
         isDeveloperMode = call.argument("isDeveloperMode") ?: false,
         terminalKey = call.argument("terminalKey") ?: error("terminalKey is required in initialize method"),
-        password = call.argument("password") ?: error("password is required in initialize method"),
         publicKey = call.argument("publicKey") ?: error("publicKey is required in initialize method"),
         enableGooglePay = call.argument("enableGooglePay") ?: false,
         requireAddress = call.argument("requireAddress") ?: false,
