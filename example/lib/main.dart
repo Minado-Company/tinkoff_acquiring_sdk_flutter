@@ -16,9 +16,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final TinkoffAcquiringSdk tinkoffAcquiringSdk = TinkoffAcquiringSdk(
+      isDeveloperMode: true,
       isDebug: true,
       terminalKey: "TestSDK",
-      password: "12345678",
       publicKey: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5Yg3RyEkszggDVMDHCAG\n" +
           "zJm0mYpYT53BpasrsKdby8iaWJVACj8ueR0Wj3Tu2BY64HdIoZFvG0v7UqSFztE/\n" +
           "zUvnznbXVYguaUcnRdwao9gLUQO2I/097SHF9r++BYI0t6EtbbcWbfi755A1EWfu\n" +
@@ -77,17 +77,21 @@ class _MyAppState extends State<MyApp> {
                 child: Text("open payment qr screen")),
             ElevatedButton(
                 onPressed: () {
-                  tinkoffAcquiringSdk.openPaymentScreen(
-                      orderId: "test-order-id-1",
-                      title: "Test order",
-                      description: "description for order",
-                      money: 1000.0,
-                      customerId: "test-id",
-                      checkType: TinkoffCheckType.HOLD,
-                      enableSecureKeyboard: true,
-                      enableCameraCardScanner: true,
-                      darkThemeMode: TinkoffDarkThemeMode.DISABLED,
-                      language: TinkoffLanguage.RU);
+                  tinkoffAcquiringSdk
+                      .openPaymentScreen(
+                          orderId: "77851",
+                          title: "Test order",
+                          description: "description for order",
+                          money: 1000.0,
+                          customerId: "user-key",
+                          email: 'user@example.com',
+                          checkType: TinkoffCheckType.HOLD,
+                          enableSecureKeyboard: true,
+                          enableCameraCardScanner: true,
+                          darkThemeMode: TinkoffDarkThemeMode.DISABLED,
+                          language: TinkoffLanguage.RU)
+                      .then((value) => print('VALUE $value'))
+                      .catchError((Error) => print('ERRROR HANDLER $Error'));
                 },
                 child: Text("open payment screen")),
             ElevatedButton(
