@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RaisedButton(
+            ElevatedButton(
                 onPressed: () {
                   tinkoffAcquiringSdk.openAttachCardScreen(
                       customerId: "test-id",
@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
                       language: TinkoffLanguage.RU);
                 },
                 child: Text("open attach card screen")),
-            RaisedButton(
+            ElevatedButton(
                 onPressed: () {
                   tinkoffAcquiringSdk.openSavedCardsScreen(
                       customerId: "test-id",
@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
                       language: TinkoffLanguage.RU);
                 },
                 child: Text("open saved cards screen")),
-            RaisedButton(
+            ElevatedButton(
                 onPressed: () {
                   tinkoffAcquiringSdk.openPaymentQrScreen(
                       enableSecureKeyboard: true,
@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
                       language: TinkoffLanguage.RU);
                 },
                 child: Text("open payment qr screen")),
-            RaisedButton(
+            ElevatedButton(
                 onPressed: () {
                   tinkoffAcquiringSdk.openPaymentScreen(
                       orderId: "test-order-id-1",
@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
                       language: TinkoffLanguage.RU);
                 },
                 child: Text("open payment screen")),
-            RaisedButton(
+            ElevatedButton(
                 onPressed: () {
                   tinkoffAcquiringSdk.openGooglePay(
                       orderId: "test-order-id-1",
@@ -105,7 +105,7 @@ class _MyAppState extends State<MyApp> {
                       language: TinkoffLanguage.RU);
                 },
                 child: Text("open google pay")),
-            RaisedButton(
+            ElevatedButton(
                 onPressed: () {
                   tinkoffAcquiringSdk.openApplePay(
                       orderId: "test-order-id-1",

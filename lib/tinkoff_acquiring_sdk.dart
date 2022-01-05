@@ -86,7 +86,7 @@ class TinkoffAcquiringSdk {
     }
 
     final Map<dynamic, dynamic> response =
-        await (_channel.invokeMethod('initialize', {
+        await _channel.invokeMethod('initialize', {
       'isDeveloperMode': this.isDeveloperMode,
       'isDebug': this.isDebug,
       'terminalKey': this.terminalKey,
@@ -95,7 +95,7 @@ class TinkoffAcquiringSdk {
       'enableGooglePay': this.enableGooglePay,
       'requireAddress': this.requireAddress,
       'requirePhone': this.requirePhone,
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    });
 
     final TinkoffAcquiringInitializationResponse status =
         TinkoffAcquiringInitializationResponse.fromJson(
@@ -140,7 +140,7 @@ class TinkoffAcquiringSdk {
     assert(language != null);
 
     final Map<dynamic, dynamic> response =
-        await (_channel.invokeMethod('openAttachCardScreen', {
+        await _channel.invokeMethod('openAttachCardScreen', {
       'customerId': customerId,
       'checkType': checkType != null ? _mapEnumToString(checkType) : null,
       'email': email,
@@ -148,7 +148,7 @@ class TinkoffAcquiringSdk {
       'enableCameraCardScanner': enableCameraCardScanner,
       'darkThemeMode': _mapEnumToString(darkThemeMode),
       'language': _mapLanguageToPlatform(language)
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    });
 
     final TinkoffCommonResponse status =
         TinkoffCommonResponse.fromJson(response.cast<String, dynamic>());
@@ -191,7 +191,7 @@ class TinkoffAcquiringSdk {
     assert(language != null);
 
     final Map<dynamic, dynamic> response =
-        await (_channel.invokeMethod('openPaymentScreen', {
+        await _channel.invokeMethod('openPaymentScreen', {
       'orderId': orderId,
       'title': title,
       'description': description,
@@ -207,7 +207,7 @@ class TinkoffAcquiringSdk {
       'emailRequired': emailRequired,
       'shops': shops?.map((item) => item.toMap())?.toList(),
       'receipt': receipt?.toMap(),
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    });
 
     final TinkoffCommonResponse status =
         TinkoffCommonResponse.fromJson(response.cast<String, dynamic>());
@@ -250,7 +250,7 @@ class TinkoffAcquiringSdk {
     assert(language != null);
 
     final Map<dynamic, dynamic> response =
-        await (_channel.invokeMethod('openGooglePay', {
+        await _channel.invokeMethod('openGooglePay', {
       'orderId': orderId,
       'title': title,
       'description': description,
@@ -265,7 +265,7 @@ class TinkoffAcquiringSdk {
       'language': _mapLanguageToPlatform(language),
       'shops': shops?.map((item) => item.toMap())?.toList(),
       'receipt': receipt?.toMap(),
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    });
 
     final TinkoffCommonResponse status =
         TinkoffCommonResponse.fromJson(response.cast<String, dynamic>());
@@ -308,7 +308,7 @@ class TinkoffAcquiringSdk {
     assert(merchantIdentifier != null);
 
     final Map<dynamic, dynamic> response =
-        await (_channel.invokeMethod('openApplePay', {
+        await _channel.invokeMethod('openApplePay', {
       'orderId': orderId,
       'title': title,
       'description': description,
@@ -322,7 +322,7 @@ class TinkoffAcquiringSdk {
       'shops': shops?.map((item) => item.toMap())?.toList(),
       'emailRequired': emailRequired,
       'receipt': receipt?.toMap(),
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    });
 
     final TinkoffCommonResponse status =
         TinkoffCommonResponse.fromJson(response.cast<String, dynamic>());
@@ -348,12 +348,12 @@ class TinkoffAcquiringSdk {
     assert(language != null);
 
     final Map<dynamic, dynamic> response =
-        await (_channel.invokeMethod('openPaymentQrScreen', {
+        await _channel.invokeMethod('openPaymentQrScreen', {
       'enableSecureKeyboard': enableSecureKeyboard,
       'enableCameraCardScanner': enableCameraCardScanner,
       'darkThemeMode': _mapEnumToString(darkThemeMode),
       'language': _mapLanguageToPlatform(language)
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    });
 
     final TinkoffCommonResponse status =
         TinkoffCommonResponse.fromJson(response.cast<String, dynamic>());
@@ -383,7 +383,7 @@ class TinkoffAcquiringSdk {
     assert(language != null);
 
     final Map<dynamic, dynamic> response =
-        await (_channel.invokeMethod('openSavedCardsScreen', {
+        await _channel.invokeMethod('openSavedCardsScreen', {
       'customerId': customerId,
       'checkType': checkType != null ? _mapEnumToString(checkType) : null,
       'email': email,
@@ -391,7 +391,7 @@ class TinkoffAcquiringSdk {
       'enableCameraCardScanner': enableCameraCardScanner,
       'darkThemeMode': _mapEnumToString(darkThemeMode),
       'language': _mapLanguageToPlatform(language)
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    });
 
     final TinkoffCommonResponse status =
         TinkoffCommonResponse.fromJson(response.cast<String, dynamic>());
