@@ -1,6 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:collection/collection.dart' show IterableExtension;
 part of 'tinkoff_acquiring_models.dart';
 
 // **************************************************************************

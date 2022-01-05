@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 
 part 'tinkoff_acquiring_models.g.dart';
 
