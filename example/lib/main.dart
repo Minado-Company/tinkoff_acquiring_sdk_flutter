@@ -46,24 +46,30 @@ class _MyAppState extends State<MyApp> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  tinkoffAcquiringSdk.openAttachCardScreen(
-                      customerId: "test-id",
-                      checkType: TinkoffCheckType.HOLD,
-                      enableSecureKeyboard: true,
-                      enableCameraCardScanner: true,
-                      darkThemeMode: TinkoffDarkThemeMode.DISABLED,
-                      language: TinkoffLanguage.RU);
+                  tinkoffAcquiringSdk
+                      .openAttachCardScreen(
+                          customerId: "test-id",
+                          checkType: TinkoffCheckType.HOLD,
+                          enableSecureKeyboard: true,
+                          enableCameraCardScanner: true,
+                          darkThemeMode: TinkoffDarkThemeMode.DISABLED,
+                          language: TinkoffLanguage.RU)
+                      .then((value) => print('VALUE $value'))
+                      .catchError((Error) => print('ERRROR HANDLER $Error'));
                 },
                 child: Text("open attach card screen")),
             ElevatedButton(
                 onPressed: () {
-                  tinkoffAcquiringSdk.openSavedCardsScreen(
-                      customerId: "test-id",
-                      checkType: TinkoffCheckType.HOLD,
-                      enableSecureKeyboard: true,
-                      enableCameraCardScanner: true,
-                      darkThemeMode: TinkoffDarkThemeMode.ENABLED,
-                      language: TinkoffLanguage.RU);
+                  tinkoffAcquiringSdk
+                      .openSavedCardsScreen(
+                          customerId: "test-id",
+                          checkType: TinkoffCheckType.HOLD,
+                          enableSecureKeyboard: true,
+                          enableCameraCardScanner: true,
+                          darkThemeMode: TinkoffDarkThemeMode.ENABLED,
+                          language: TinkoffLanguage.RU)
+                      .then((value) => print('VALUE $value'))
+                      .catchError((Error) => print('ERRROR HANDLER $Error'));
                 },
                 child: Text("open saved cards screen")),
             ElevatedButton(
@@ -79,7 +85,7 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () {
                   tinkoffAcquiringSdk
                       .openPaymentScreen(
-                          orderId: "77851",
+                          orderId: "77sad3851",
                           title: "Test order",
                           description: "description for order",
                           money: 1000.0,
