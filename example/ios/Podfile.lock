@@ -4,42 +4,31 @@ PODS:
     - Flutter
     - TinkoffASDKCore
     - TinkoffASDKUI
-  - TinkoffASDKCore (2.1.4)
-  - TinkoffASDKUI (2.1.4):
+  - TinkoffASDKCore (2.6.0)
+  - TinkoffASDKUI (2.6.0):
     - TinkoffASDKCore
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - tinkoff_acquiring_sdk (from `.symlinks/plugins/tinkoff_acquiring_sdk/ios`)
-  - TinkoffASDKCore (from `https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git`, tag `2.1.4`)
-  - TinkoffASDKUI (from `https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git`, tag `2.1.4`)
+
+SPEC REPOS:
+  trunk:
+    - TinkoffASDKCore
+    - TinkoffASDKUI
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   tinkoff_acquiring_sdk:
     :path: ".symlinks/plugins/tinkoff_acquiring_sdk/ios"
-  TinkoffASDKCore:
-    :git: https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git
-    :tag: 2.1.4
-  TinkoffASDKUI:
-    :git: https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git
-    :tag: 2.1.4
-
-CHECKOUT OPTIONS:
-  TinkoffASDKCore:
-    :git: https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git
-    :tag: 2.1.4
-  TinkoffASDKUI:
-    :git: https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git
-    :tag: 2.1.4
 
 SPEC CHECKSUMS:
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  tinkoff_acquiring_sdk: be33a719b7a4804f0fe17f9331c54beae5a9854f
-  TinkoffASDKCore: 739592f2a3e1c1f61ccd135e696618659a700ced
-  TinkoffASDKUI: a712f7650de730e085359ab5ae772931316b8650
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  tinkoff_acquiring_sdk: d3b5e09e4c0bbb8d8535da87e7b4faca369011b4
+  TinkoffASDKCore: 840e645d65596bb4abe92a0940beaaf9b7a11d31
+  TinkoffASDKUI: ee0513c87a84c012ec92cc1d1e063fd458a7ab15
 
-PODFILE CHECKSUM: 2029536a1399091725a40f9b3dcb0d2544fa63f4
+PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

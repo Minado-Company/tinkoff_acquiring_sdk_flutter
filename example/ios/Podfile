@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '11.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -39,6 +39,3 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
   end
 end
-
-pod 'TinkoffASDKCore', :git => 'https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git', :tag => '2.1.4'
-pod 'TinkoffASDKUI', :git => 'https://github.com/TinkoffCreditSystems/AcquiringSdk_IOS.git', :tag => '2.1.4'

@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   s.author           = { 'nk2' => 'nick@nk2.eu' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
+  s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'TinkoffASDKCore'
   s.dependency 'TinkoffASDKUI'

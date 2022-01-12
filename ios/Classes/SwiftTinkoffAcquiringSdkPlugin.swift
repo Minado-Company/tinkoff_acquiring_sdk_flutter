@@ -22,7 +22,7 @@ public let taxation = [
     "USN_INCOME_OUTCOME" : Taxation.usnIncomeOutcome,
     "ENVD" : Taxation.envd,
     "ESN" : Taxation.esn,
-    "PATENT" : Taxation.parent,
+    "PATENT" : Taxation.patent,
 ]
 
 public struct TinkoffOrderOptions {
@@ -31,8 +31,8 @@ public struct TinkoffOrderOptions {
   var title: String
   var description: String
   var recurrentPayment: Bool
-    var shops: [Shop]
-    var receipt: Receipt
+    var shops: [Shop]?
+    var receipt: Receipt?
 }
 
 public struct TinkoffCustomerOptions {
@@ -114,7 +114,7 @@ public class TinkoffAcquiringDelegate {
     isDebug: Bool,
     isDeveloperMode: Bool,
     terminalKey: String,
-    password: String,
+//    password: String,
     publicKey: String,
     result: @escaping TinkoffResult<TinkoffAcquiringDelegateInitializeResponse>
   ) {
@@ -125,7 +125,7 @@ public class TinkoffAcquiringDelegate {
     
     do {
         let acquiringConfiguration = AcquiringSdkConfiguration(
-            credential: AcquiringSdkCredential(terminalKey: terminalKey, password: password, publicKey: publicKey),
+            credential: AcquiringSdkCredential(terminalKey: terminalKey, publicKey: publicKey),
             server: acquiringEnvironment
           )
         
@@ -196,6 +196,7 @@ public class TinkoffAcquiringDelegate {
   }
   public enum TinkoffAcquiringDelegateOpenPaymentScreenStatus: String {
     case RESULT_OK = "RESULT_OK"
+    case RESULT_CANCELLED = "RESULT_CANCELLED"
     case RESULT_ERROR = "RESULT_ERROR"
     case ERROR_NOT_INITIALIZED = "ERROR_NOT_INITIALIZED"
   }
@@ -233,10 +234,18 @@ public class TinkoffAcquiringDelegate {
       completionHandler: { apiResult -> Void in
         do {
           let unfoldedResult = try apiResult.get()
-          result(TinkoffAcquiringDelegateOpenPaymentScreenResponse(
-            status: unfoldedResult.success ? TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_OK : TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_ERROR,
-            paymentId: unfoldedResult.paymentId
+
+          if (unfoldedResult.status == PaymentStatus.cancelled){
+            result(TinkoffAcquiringDelegateOpenPaymentScreenResponse(
+              status: TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_CANCELLED,
+              paymentId: unfoldedResult.paymentId
           ))
+          } else {
+            result(TinkoffAcquiringDelegateOpenPaymentScreenResponse(
+              status: unfoldedResult.success ? TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_OK : TinkoffAcquiringDelegateOpenPaymentScreenStatus.RESULT_ERROR,
+              paymentId: unfoldedResult.paymentId
+          ))
+          }
         }
         catch {
           result(TinkoffAcquiringDelegateOpenPaymentScreenResponse(
@@ -404,14 +413,14 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
         let isDebug: Bool = arguments["isDebug"] as? Bool ?? false
         let isDeveloperMode: Bool = arguments["isDeveloperMode"] as? Bool ?? false
       guard let terminalKey: String = arguments["terminalKey"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "terminalKey is required in initialize method", details: nil)); return }
-      guard let password: String = arguments["password"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "password is required in initialize method", details: nil)); return }
+//      guard let password: String = arguments["password"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "password is required in initialize method", details: nil)); return }
       guard let publicKey: String = arguments["publicKey"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "publicKey is required in initialize method", details: nil)); return }
 
       delegate.initialize(
         isDebug: isDebug,
         isDeveloperMode: isDeveloperMode,
         terminalKey: terminalKey,
-        password: password,
+//        password: password,
         publicKey: publicKey,
         result: { (response) -> Void in
           result([
@@ -446,13 +455,21 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
       guard let title: String = arguments["title"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "title is required in openPaymentScreen method", details: nil)); return }
       guard let description: String = arguments["description"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "description is required in openPaymentScreen method", details: nil)); return }
       guard let money: NSNumber = arguments["money"] as? NSNumber else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
-        guard let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "shops is required in openPaymentScreen method", details: nil)); return }
-        guard let receipt: [String: Any] = arguments["receipt"] as? [String: Any] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
+      let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] ?? []
+      let receipt: [String: Any] = arguments["receipt"] as? [String: Any] ?? [:]
       let recurrentPayment: Bool = arguments["recurrentPayment"] as? Bool ?? false
         let emailRequired: Bool = arguments["emailRequired"] as? Bool ?? true
 
       delegate.openPaymentScreen(
-        tinkoffOrderOptions: TinkoffOrderOptions(orderId: orderId, money: money, title: title, description: description, recurrentPayment: recurrentPayment, shops: mapShops(shops: shops), receipt: mapReciept(reciept: receipt)),
+        tinkoffOrderOptions: TinkoffOrderOptions(
+          orderId: orderId,
+           money: money,
+            title: title,
+             description: description,
+              recurrentPayment: recurrentPayment,
+               shops: (shops.count > 0 ? mapShops(shops: shops): nil),
+                receipt: (receipt.count > 0 ? mapReciept(reciept: receipt): nil)
+                ),
         tinkoffCustomerOptions: TinkoffCustomerOptions(customerId: customerId, email: email),
         tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language), emailRequired: emailRequired,
         result: { (response) -> Void in
@@ -550,7 +567,7 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
         return Receipt(shopCode: shopCode, email: email, taxation: taxation, phone: phone, items: items, agentData: nil, supplierInfo: nil, customer: customer, customerInn: customerInn)
     }
     
-    func mapItems(items: [[String: Any]]) -> [Item] {
+    func mapItems(items: [[String: Any]]) -> [Item]? {
         var array: [Item] = []
         array = items.map({ (e) -> Item in
             return Item(
