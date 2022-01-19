@@ -489,14 +489,22 @@ public class SwiftTinkoffAcquiringSdkPlugin: NSObject, FlutterPlugin {
       guard let title: String = arguments["title"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "title is required in openPaymentScreen method", details: nil)); return }
       guard let description: String = arguments["description"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "description is required in openPaymentScreen method", details: nil)); return }
       guard let money: NSNumber = arguments["money"] as? NSNumber else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
-        guard let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "shops is required in openPaymentScreen method", details: nil)); return }
-        guard let receipt: [String: Any] = arguments["receipt"] as? [String: Any] else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "money is required in openPaymentScreen method", details: nil)); return }
+           let shops: [[String: Any]] = arguments["shops"] as? [[String: Any]] ?? []
+              let receipt: [String: Any] = arguments["receipt"] as? [String: Any] ?? [:]
       let recurrentPayment: Bool = arguments["recurrentPayment"] as? Bool ?? false
         let emailRequired: Bool = arguments["emailRequired"] as? Bool ?? false
       guard let merchantIdentifier: String = arguments["merchantIdentifier"] as? String else { result(FlutterError(code: TINKOFF_COMMON_STATUS_FATAL_ERROR, message: "merchantIdentifier is required in openApplePay method", details: nil)); return }
 
       delegate.openApplePay(
-        tinkoffOrderOptions: TinkoffOrderOptions(orderId: orderId, money: money, title: title, description: description, recurrentPayment: recurrentPayment, shops: mapShops(shops: shops), receipt: mapReciept(reciept: receipt)),
+        tinkoffOrderOptions: TinkoffOrderOptions(
+        orderId: orderId,
+        money: money,
+        title: title,
+        description: description,
+        recurrentPayment: recurrentPayment,
+        shops: (shops.count > 0 ? mapShops(shops: shops): nil),
+        receipt: (receipt.count > 0 ? mapReciept(reciept: receipt): nil)
+        ),
         tinkoffCustomerOptions: TinkoffCustomerOptions(customerId: customerId, email: email),
         tinkoffFeaturesOptions: TinkoffFeaturesOptions(language: language),
         tinkoffApplePayOptions: TinkoffApplePayOptions(merchantIdentifier: merchantIdentifier),
